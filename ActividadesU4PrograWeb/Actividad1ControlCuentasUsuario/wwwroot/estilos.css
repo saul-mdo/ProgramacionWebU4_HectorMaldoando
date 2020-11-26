@@ -1,0 +1,126 @@
+﻿html {
+    background-image: Url(fondo.jpg);    
+}
+
+*{
+    font-family:'Century Gothic';
+}
+
+#Principal {
+    margin: 150px auto;
+    background-color: white;
+    width: 480px;
+    background-color: rgba(255, 255, 255, .8);
+    border-radius: 5px;
+    padding:20px;
+}
+
+.b {
+    display: block;
+    margin: 15px 40px;
+}
+
+input[type=email], input[type=text], input[type=password] {
+    width: 400px;
+    font-size: 15px;
+}
+
+input[type=submit]{
+    background-color:darkred;
+    color:white;
+    font-size:18px;
+    border:none;
+    border-radius:5px;
+    width:100px;
+    padding:5px;
+    margin:15px auto;
+}
+
+#recuerdame {
+    margin: 0 0 0 40px;
+}
+
+#campo {
+    font-size: 10px;
+    color: red;
+    margin: 0 40px 10px 40px;
+    display:block;
+}
+
+h1, h2 {
+    text-align: center;
+    color: darkred;
+    border-bottom: 1.5px solid gray;
+    margin: 0 30px 0 30px;
+}
+
+b{
+    color:red;
+}
+
+a {
+    text-decoration:none;
+    font-size:13px;
+    color:blue;
+    display:inline;
+}
+
+p {
+    font-size: 13px;
+    margin: 0 0 0 40px;
+    display:inline;
+    
+}
+
+footer {
+    background-color: rgba(255, 255, 255, .8);
+    margin:0;
+    text-align:center;
+}
+
+h4, h5{
+    margin:0;
+    color:darkred;
+}
+
+#cancel{
+    margin-left:40px;
+    margin-top:0;
+    margin-bottom:0;
+    font-size:50px;
+    text-decoration:none;
+}
+
+#EntradaPrincipal {
+    margin: 150px auto;
+    width: 540px;
+    background-color: rgba(255, 255, 255, .8);
+    border-radius: 5px;
+    padding: 20px;
+    vertical-align:central;
+}
+
+    h3 {
+        font-size: 18px;
+        text-align: center;
+        margin: 20px 40px;
+    }
+
+    #EntradaPrincipal form h2 {
+        font-size: 30px;
+    }
+
+    #EntradaPrincipal form a {
+        display: inline;
+    }
+#footerEntrada{
+    margin-top:280px;
+}
+
+#EntradaPrincipal form #cerrar {
+    margin: 30px 100px;
+}
+
+#EntradaPrincipal form #eliminar{
+    margin:30px 0px 30px 80px;
+}
