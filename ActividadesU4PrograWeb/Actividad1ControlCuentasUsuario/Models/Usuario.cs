@@ -5,9 +5,10 @@ namespace Actividad1ControlCuentasUsuario.Models
 {
     public partial class Usuario
     {
-        public int IdUsuario { get; set; }
-        public string NombreCompleto { get; set; }
+        public int Id { get; set; }
+        public string NombreUsuario { get; set; }
         public string Correo { get; set; }
         public string Contrasena { get; set; }
+        public ulong Activo { get; set; }
     }
 }

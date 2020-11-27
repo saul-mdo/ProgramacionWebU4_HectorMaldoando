@@ -30,18 +30,21 @@ namespace Actividad1ControlCuentasUsuario.Models
         {
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.HasKey(e => e.IdUsuario)
-                    .HasName("PRIMARY");
-
                 entity.ToTable("usuario");
 
-                entity.Property(e => e.IdUsuario)
-                    .HasColumnName("idUsuario")
-                    .HasColumnType("int(11)");
+                entity.HasIndex(e => e.Id)
+                    .HasName("Id_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).HasColumnType("int(11)");
+
+                entity.Property(e => e.Activo)
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("b'0'");
 
                 entity.Property(e => e.Contrasena)
                     .IsRequired()
-                    .HasColumnType("varchar(100)")
+                    .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
@@ -51,7 +54,7 @@ namespace Actividad1ControlCuentasUsuario.Models
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.NombreCompleto)
+                entity.Property(e => e.NombreUsuario)
                     .IsRequired()
                     .HasColumnType("varchar(100)")
                     .HasCharSet("utf8")
