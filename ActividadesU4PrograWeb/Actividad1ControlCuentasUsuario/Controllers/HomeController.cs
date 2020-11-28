@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Actividad1ControlCuentasUsuario.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net.Mail;
+using System.Net;
 
 namespace Actividad1ControlCuentasUsuario.Controllers
 {
@@ -99,6 +101,16 @@ namespace Actividad1ControlCuentasUsuario.Controllers
             //  LO AGREGO A LA BD PERO CON EL CAMPO ACTIVO EN FALSO.
 
             // MANDO EL CORREO CON UN CODIGO GENERADO RANDOM.
+            MailMessage message = new MailMessage();
+            message.From = new MailAddress("noreply@sistemas171.com", "Cuenta Confirmación de Sistemas171");
+            message.To.Add(u.Correo);
+            message.Subject = "Confirmación de Registro";
+            message.Body = "¡Bienvenido a Sistemas171!<br/> Introduzca el siguiente codigo en la ventana de confirmación para activar su cuenta:<br/>"; //INSERTAR CODIGO
+            message.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient("mail.sistemas171.com", 2525);
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential("noreply@sistemas171.com", "##ITESRC2020");
+            client.Send(message);
 
             // LO MANDO A OTRA VISTA, UNA ESPERA MIENTRAS INTRODUCE EL CODIGO QUE LLEGÓ AL CORREO. LA VISTA DE ESPERA TENDRÁ UN INPUT PARA INTRODUCIR EL CODIGO.
 
