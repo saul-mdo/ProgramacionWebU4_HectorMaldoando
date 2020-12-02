@@ -42,6 +42,12 @@ namespace Actividad1ControlCuentasUsuario.Models
                     .HasColumnType("bit(1)")
                     .HasDefaultValueSql("b'0'");
 
+                entity.Property(e => e.Codigo)
+                    .IsRequired()
+                    .HasColumnType("text")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
                 entity.Property(e => e.Contrasena)
                     .IsRequired()
                     .HasColumnType("text")

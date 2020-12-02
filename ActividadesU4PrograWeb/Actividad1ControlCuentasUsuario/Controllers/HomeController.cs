@@ -103,27 +103,26 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                     vm.Usuario.Contrasena = hashContraseña;
 
                     var codigo = GenerarCodigoHelper.GenerarCodigo();
-                    
-                    //
 
-                    //vm.Usuario.Activo = 1;
+                    vm.Usuario.Codigo = codigo;
+
                     repos.Insert(vm.Usuario);
-                    // return RedirectToAction("IniciarSesion");
-
 
 
                     // MANDO EL CORREO CON UN CODIGO GENERADO RANDOM.
                     MailMessage message = new MailMessage();
-                    message.From = new MailAddress("noreply@sistemas171.com", "Cuenta Confirmación de Sistemas171");
+                    message.From = new MailAddress("sistemascomputacionales7g@gmail.com", "Sistemas171");
                     message.To.Add(vm.Usuario.Correo);
                     message.Subject = "Confirmación de Registro";
-                    message.Body = "¡Bienvenido a Sistemas171!<br/> Introduzca el siguiente codigo en la ventana de confirmación para activar su cuenta:<br/>"; //INSERTAR CODIGO
+                    message.Body = $"¡Bienvenido a Sistemas171!<br/> Introduzca el siguiente codigo en la ventana de confirmación para activar su cuenta: {codigo}";
                     message.IsBodyHtml = true;
-                    SmtpClient client = new SmtpClient("mail.sistemas171.com", 2525);
+                    SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+                    client.EnableSsl = true;
                     client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("noreply@sistemas171.com", "##ITESRC2020");
+                    client.Credentials = new NetworkCredential("sistemascomputacionales7g@gmail.com", "sistemas7g");
                     client.Send(message);
-                    return RedirectToAction("ActivarCuenta", vm);
+
+                    return RedirectToAction("ActivarCuenta", "Home", new { Id= vm.Usuario.Id });
                 }
                 else
                 {
@@ -136,10 +135,41 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                 ModelState.AddModelError("", ex.Message);
                 return View(vm);
             }
+        }
 
-            // LO MANDO A OTRA VISTA, UNA ESPERA MIENTRAS INTRODUCE EL CODIGO QUE LLEGÓ AL CORREO. LA VISTA DE ESPERA TENDRÁ UN INPUT PARA INTRODUCIR EL CODIGO.
+        [AllowAnonymous]
+        public IActionResult ActivarCuenta(int Id)
+        {
+            ActivacionCuentaViewModel avm = new ActivacionCuentaViewModel();
+            avm.Id = Id;
+            return View(avm);
+        }
 
-            // VALIDA SI ES EL MISMO CODIGO. SI ES EL MISMO, ENTONCES HACE UN UPDATE A ACTIVO=TRUE.
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult ActivarCuenta(ActivacionCuentaViewModel avm)
+        {
+            controlusuariosContext context = new controlusuariosContext();
+            var original = context.Usuario.FirstOrDefault(x => x.Id == avm.Id);
+            if (original != null)
+            {
+                Repository repos = new Repository(context);
+                if (original.Codigo == avm.codigoConfirmacion)
+                {
+                    original.Activo = 1;
+                    repos.Update(original);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("","El codigo no coincide. No se ha podido activar la cuenta.");
+                    return View(avm);
+                }
+            }
+            else
+            {
+                return RedirectToAction("IniciarSesion");
+            }
         }
     }
 }

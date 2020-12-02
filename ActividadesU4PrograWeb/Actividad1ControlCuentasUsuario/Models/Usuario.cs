@@ -10,5 +10,6 @@ namespace Actividad1ControlCuentasUsuario.Models
         public string Correo { get; set; }
         public string Contrasena { get; set; }
         public ulong Activo { get; set; }
+        public string Codigo { get; set; }
     }
 }

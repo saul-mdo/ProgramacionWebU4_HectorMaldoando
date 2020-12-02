@@ -9,13 +9,13 @@
     <form method="post" action="~/Home/CrearCuenta">
         <h2>Crear Cuenta</h2>
         <label class="b">Nombre de Usuario</label>
-        <input class="b" type="text" asp-for="Usuario.NombreUsuario" />
+        <input required class="b" type="text" asp-for="Usuario.NombreUsuario" />
         <label class="b">Correo Electronico</label>
-        <input class="b" type="email" asp-for="Usuario.Correo" />
+        <input required class="b" type="email" asp-for="Usuario.Correo" />
         <label class="b">Contraseña</label>
-        <input class="b" type="password" asp-for="Usuario.Contrasena" />
+        <input required class="b" type="password" asp-for="Usuario.Contrasena" />
         <label class="b">Confirmar Contraseña</label>
-        <input class="b" type="password" asp-for="ConfirmarContraseña" />
+        <input required class="b" type="password" asp-for="ConfirmarContraseña" />
         @Html.ValidationSummary()
         <input class="b" type="submit" value="Registrar" />
         <a id="cancel" href="~/Home/IniciarSesion">

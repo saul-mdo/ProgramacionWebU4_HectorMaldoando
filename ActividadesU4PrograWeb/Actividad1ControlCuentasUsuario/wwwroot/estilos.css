@@ -20,7 +20,7 @@
     margin: 15px 40px;
 }
 
-input[type=email], input[type=text], input[type=password] {
+input[type=email], input[type=text], input[type=password]{
     width: 400px;
     font-size: 15px;
 }
