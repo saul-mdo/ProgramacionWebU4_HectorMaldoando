@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Actividad1ControlCuentasUsuario.Models.ViewModels
 {
-    public class ActivacionCuentaViewModel
+    public class ValidarCodigoViewModel
     {
         public int Id { get; set; }
         public string codigoConfirmacion { get; set; }

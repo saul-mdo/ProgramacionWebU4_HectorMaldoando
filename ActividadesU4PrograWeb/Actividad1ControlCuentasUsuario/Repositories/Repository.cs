@@ -19,6 +19,11 @@ namespace Actividad1ControlCuentasUsuario.Repositories
             return Context.Usuario.FirstOrDefault(x => x.Id == id);
         }
 
+        public Usuario GetUsuarioByCorreo(string correo)
+        {
+            return Context.Usuario.FirstOrDefault(x => x.Correo.ToUpper()==correo.ToUpper());
+        }
+
         public Usuario GetUsuario(Usuario id)
         {
             return Context.Find<Usuario>(id);

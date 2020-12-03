@@ -57,7 +57,7 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                         Informacion.Add(new Claim(ClaimTypes.Name, "Usuario Registrado"));
                         Informacion.Add(new Claim(ClaimTypes.Role, "UsuarioRegistrado"));
                         Informacion.Add(new Claim("NombreUsuario", user.NombreUsuario));
-                        Informacion.Add(new Claim("IdUsuario",user.Id.ToString()));
+                        Informacion.Add(new Claim("IdUsuario", user.Id.ToString()));
                         var claimsIdentity = new ClaimsIdentity(Informacion, CookieAuthenticationDefaults.AuthenticationScheme);
                         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = recuerdame });
@@ -129,7 +129,7 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                     client.Credentials = new NetworkCredential("sistemascomputacionales7g@gmail.com", "sistemas7g");
                     client.Send(message);
 
-                    return RedirectToAction("ActivarCuenta", "Home", new { Id= vm.Usuario.Id });
+                    return RedirectToAction("ValidarCodigo", "Home", new { Id = vm.Usuario.Id });
                 }
                 else
                 {
@@ -137,47 +137,64 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                     return View(vm);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(vm);
             }
-        }
+        } 
 
         [AllowAnonymous]
-        public IActionResult ActivarCuenta(int Id)
+        public IActionResult ValidarCodigo(int Id)
         {
-            ActivacionCuentaViewModel avm = new ActivacionCuentaViewModel();
+            ValidarCodigoViewModel avm = new ValidarCodigoViewModel();
             avm.Id = Id;
             return View(avm);
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult ActivarCuenta(ActivacionCuentaViewModel avm)
+        public IActionResult ValidarCodigo(ValidarCodigoViewModel avm)
         {
-            Repository repos = new Repository(context);
+            Repository repos = new Repository(context); 
+
             var original = repos.GetUsuarioById(avm.Id);
-            if (original != null)
+
+            try
             {
-                if (original.Codigo == avm.codigoConfirmacion)
+                if (original != null)
                 {
-                    original.Activo = 1;
-                    repos.Update(original);
-                    return RedirectToAction("Index");
+                    if (original.Codigo == avm.codigoConfirmacion)
+                    {
+                        if (original.Activo == 1)
+                        {
+                            return RedirectToAction("CambiarContraseña", "Home", new { id = original.Id });
+                        }
+                        else
+                        {
+                            original.Activo = 1;
+                            repos.Update(original);
+                            return RedirectToAction("Index");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "El codigo no coincide. No se ha podido realizar la acción.");
+                        return View(avm);
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError("","El codigo no coincide. No se ha podido activar la cuenta.");
-                    return View(avm);
+                    return RedirectToAction("IniciarSesion");
                 }
-            }
-            else
+            }catch(Exception ex)
             {
-                return RedirectToAction("IniciarSesion");
+                ModelState.AddModelError("", ex.Message);
+                return View(avm);
             }
+
         }
-        
+
         [Authorize(Roles = "UsuarioRegistrado")]
         public IActionResult EliminarCuenta(int id)
         {
@@ -209,18 +226,16 @@ namespace Actividad1ControlCuentasUsuario.Controllers
             }
         }
 
-        [Authorize(Roles = "UsuarioRegistrado")]
         public IActionResult CambiarContraseña(int id)
         {
             CuentaViewModel vm = new CuentaViewModel();
             Repository repos = new Repository(context);
             vm.Usuario = repos.GetUsuarioById(id);
-            
+
             return View(vm);
         }
 
         [HttpPost]
-        [Authorize(Roles = "UsuarioRegistrado")]
         public IActionResult CambiarContraseña(CuentaViewModel vm)
         {
             Repository repos = new Repository(context);
@@ -245,7 +260,53 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                 return RedirectToAction("Index");
             }
 
-           
+
+        }
+
+        [AllowAnonymous]
+        public IActionResult RecuperarContraseña()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult RecuperarContraseña(Usuario u)
+        {
+            Repository repos = new Repository(context);
+            try
+            {
+                if (u.Correo != null)
+                {
+                    var original = repos.GetUsuarioByCorreo(u.Correo);
+                    var codigo = GenerarCodigoHelper.GenerarCodigo();
+                    original.Codigo = codigo;
+                    repos.Update(original);
+                    // MANDO EL CORREO CON UN CODIGO GENERADO RANDOM.
+                    MailMessage message = new MailMessage();
+                    message.From = new MailAddress("sistemascomputacionales7g@gmail.com", "Sistemas171");
+                    message.To.Add(original.Correo);
+                    message.Subject = "Recuperación de Contraseña";
+                    message.Body = $"Hemos recibido su solicitud para cambiar su contraseña.<br/> Introduzca el siguiente codigo en la ventana de confirmación para modificar su contraseña: {codigo}";
+                    message.IsBodyHtml = true;
+                    SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+                    client.EnableSsl = true;
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential("sistemascomputacionales7g@gmail.com", "sistemas7g");
+                    client.Send(message);
+                    return RedirectToAction("ValidarCodigo", "Home", new { id = original.Id });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Introduzca el correo.");
+                    return View(u);
+                }
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(u);
+            }
         }
     }
 }

@@ -1,0 +1,20 @@
+﻿@model Actividad1ControlCuentasUsuario.Models.Usuario
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "_Layout";
+}
+
+<div id="Principal">
+    <form method="post" action="~/Home/RecuperarContraseña">
+
+        <h2>Recuperar Contraseña</h2>
+        <p>Ingrese su correo, se le enviará un codigo.</p>
+        <label class="b" >Correo Electronico:</label>
+        <input class="b" asp-for=" Correo" type="email" />
+        @Html.ValidationSummary()
+        <input class="b" type="submit" value="Aceptar" />
+
+    </form>
+</div>
+
