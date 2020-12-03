@@ -25,12 +25,12 @@ namespace Actividad1ControlCuentasUsuario.Controllers
             context = ctx;
         }
 
-
         [Authorize(Roles = "UsuarioRegistrado")]
         public IActionResult Index()
         {
             return View();
         }
+
         [AllowAnonymous]
         public IActionResult IniciarSesion()
         {
@@ -98,7 +98,7 @@ namespace Actividad1ControlCuentasUsuario.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult CrearCuenta(CrearCuentaViewModel vm)
+        public IActionResult CrearCuenta(CuentaViewModel vm)
         {
             //  LO AGREGO A LA BD PERO CON EL CAMPO ACTIVO EN FALSO.
             try
@@ -209,9 +209,43 @@ namespace Actividad1ControlCuentasUsuario.Controllers
             }
         }
 
-        public IActionResult CambiarContraseña()
+        [Authorize(Roles = "UsuarioRegistrado")]
+        public IActionResult CambiarContraseña(int id)
         {
-            return View();
+            CuentaViewModel vm = new CuentaViewModel();
+            Repository repos = new Repository(context);
+            vm.Usuario = repos.GetUsuarioById(id);
+            
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "UsuarioRegistrado")]
+        public IActionResult CambiarContraseña(CuentaViewModel vm)
+        {
+            Repository repos = new Repository(context);
+            var original = repos.GetUsuarioById(vm.Usuario.Id);
+            var contraseñaHash = HashingHelper.GetHash(vm.Usuario.Contrasena);
+            if (original != null)
+            {
+                if (vm.Usuario.Contrasena == vm.ConfirmarContraseña)
+                {
+                    original.Contrasena = contraseñaHash;
+                    repos.Update(original);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Las contraseñas no coiniciden.");
+                    return View(vm);
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+
+           
         }
     }
 }

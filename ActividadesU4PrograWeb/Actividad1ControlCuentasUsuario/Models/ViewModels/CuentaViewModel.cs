@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Actividad1ControlCuentasUsuario.Models.ViewModels
 {
-    public class CrearCuentaViewModel
+    public class CuentaViewModel
     {
         public Usuario Usuario { get; set; }
         public string ConfirmarContraseña { get; set; }

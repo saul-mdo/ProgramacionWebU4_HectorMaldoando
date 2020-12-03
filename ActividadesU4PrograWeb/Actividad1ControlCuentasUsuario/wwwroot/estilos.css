@@ -36,7 +36,7 @@ input[type=submit], input[type=button] {
 }
 
 #divEliminar {
-    margin: 15px 0 0 175px;
+    margin: 15px 0 0 160px;
 }
 
 
@@ -118,18 +118,19 @@ h4, h5{
     #EntradaPrincipal form a {
         display: inline;
     }
+
 #footerEntrada{
     margin-top:280px;
 }
 
 #EntradaPrincipal form #cerrar {
-    margin: 30px 60px;
+    margin: 30px 0 0 60px;
 }
 
 #EntradaPrincipal form #eliminar{
-    margin:30px 0px 30px 60px;
+    margin:30px 0 0 60px;
 }
 
 #EntradaPrincipal form #cambiarContra {
-    margin: 30px 0px 30px 60px;
+    margin: 30px 0 0 60px;
 }
