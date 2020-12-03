@@ -9,10 +9,10 @@
     <form method="post" action="~/Home/ActivarCuenta">
 
         <h2>Activar Cuenta</h2>
-        <p>Le ha sido enviado un codigo de activación al correo electronico. Introduzca el codigo.</p>
+        <p>Ingrese el codigo que le ha sido enviado al correo.</p>
         <input type="hidden" asp-for="Id" />
-        <label class="b">Ingrese Código</label>
-        <textarea style="width:150px" class="b" asp-for="codigoConfirmacion" required></textarea>
+        <label class="b">Ingrese Código:</label>
+        <textarea asp-for="codigoConfirmacion" required></textarea>
 
         <input class="b" type="submit" value="Activar" />
 

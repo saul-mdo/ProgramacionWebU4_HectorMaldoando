@@ -18,6 +18,14 @@ namespace Actividad1ControlCuentasUsuario.Controllers
 {
     public class HomeController : Controller
     {
+        controlusuariosContext context;
+
+        public HomeController(controlusuariosContext ctx)
+        {
+            context = ctx;
+        }
+
+
         [Authorize(Roles = "UsuarioRegistrado")]
         public IActionResult Index()
         {
@@ -33,7 +41,6 @@ namespace Actividad1ControlCuentasUsuario.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> IniciarSesion(string correo, string contraseña, bool recuerdame)
         {
-            controlusuariosContext context = new controlusuariosContext();
             var user = context.Usuario.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
             if (user != null)
             {
@@ -50,6 +57,7 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                         Informacion.Add(new Claim(ClaimTypes.Name, "Usuario Registrado"));
                         Informacion.Add(new Claim(ClaimTypes.Role, "UsuarioRegistrado"));
                         Informacion.Add(new Claim("NombreUsuario", user.NombreUsuario));
+                        Informacion.Add(new Claim("IdUsuario",user.Id.ToString()));
                         var claimsIdentity = new ClaimsIdentity(Informacion, CookieAuthenticationDefaults.AuthenticationScheme);
                         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = recuerdame });
@@ -97,7 +105,6 @@ namespace Actividad1ControlCuentasUsuario.Controllers
             {
                 if (vm.ConfirmarContraseña == vm.Usuario.Contrasena)
                 {
-                    controlusuariosContext context = new controlusuariosContext();
                     Repository repos = new Repository(context);
                     var hashContraseña = HashingHelper.GetHash(vm.Usuario.Contrasena);
                     vm.Usuario.Contrasena = hashContraseña;
@@ -149,11 +156,10 @@ namespace Actividad1ControlCuentasUsuario.Controllers
         [HttpPost]
         public IActionResult ActivarCuenta(ActivacionCuentaViewModel avm)
         {
-            controlusuariosContext context = new controlusuariosContext();
-            var original = context.Usuario.FirstOrDefault(x => x.Id == avm.Id);
+            Repository repos = new Repository(context);
+            var original = repos.GetUsuarioById(avm.Id);
             if (original != null)
             {
-                Repository repos = new Repository(context);
                 if (original.Codigo == avm.codigoConfirmacion)
                 {
                     original.Activo = 1;
@@ -170,6 +176,42 @@ namespace Actividad1ControlCuentasUsuario.Controllers
             {
                 return RedirectToAction("IniciarSesion");
             }
+        }
+        
+        [Authorize(Roles = "UsuarioRegistrado")]
+        public IActionResult EliminarCuenta(int id)
+        {
+            Repository repos = new Repository(context);
+            var u = repos.GetUsuarioById(id);
+            if (u != null)
+            {
+                return View(u);
+            }
+            else
+                return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "UsuarioRegistrado")]
+        public IActionResult EliminarCuenta(Usuario u)
+        {
+            Repository repos = new Repository(context);
+            var usuario = repos.GetUsuarioById(u.Id);
+            if (usuario != null)
+            {
+                HttpContext.SignOutAsync();
+                repos.Delete(usuario);
+                return RedirectToAction("IniciarSesion");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        public IActionResult CambiarContraseña()
+        {
+            return View();
         }
     }
 }

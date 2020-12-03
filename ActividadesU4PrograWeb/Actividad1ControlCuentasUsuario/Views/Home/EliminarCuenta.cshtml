@@ -1,0 +1,23 @@
+﻿@model Actividad1ControlCuentasUsuario.Models.Usuario
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "_Layout";
+}
+
+<div id="EntradaPrincipal">
+    <form method="post" action="~/Home/EliminarCuenta">
+        <h1>ELIMINAR CUENTA</h1>
+        <h3>
+            ¿@User.Claims.FirstOrDefault(x => x.Type == "NombreUsuario").Value, desea eliminar su cuenta permanentemente? <br />
+        </h3>
+        <input type="hidden" asp-for="Id" />
+        <div id="divEliminar" class="b">
+            <input type="submit" value="Aceptar" />
+            <a id="cancelEliminar" href="~/Home/Index">
+                <input type="button" value="Cancelar" />
+            </a>
+        </div>
+    </form>
+</div>
+

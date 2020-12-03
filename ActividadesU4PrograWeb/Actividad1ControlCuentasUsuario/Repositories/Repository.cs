@@ -14,6 +14,11 @@ namespace Actividad1ControlCuentasUsuario.Repositories
             Context = ctx;
         }
 
+        public Usuario GetUsuarioById(int id)
+        {
+            return Context.Usuario.FirstOrDefault(x => x.Id == id);
+        }
+
         public Usuario GetUsuario(Usuario id)
         {
             return Context.Find<Usuario>(id);
@@ -36,6 +41,12 @@ namespace Actividad1ControlCuentasUsuario.Repositories
             }
         }
 
+        public virtual void Delete(Usuario entidad)
+        {
+            Context.Remove(entidad);
+            Context.SaveChanges();
+        }
+
         public bool Validar(Usuario entidad)
         {
             if (string.IsNullOrEmpty(entidad.NombreUsuario))
@@ -55,6 +66,6 @@ namespace Actividad1ControlCuentasUsuario.Repositories
                 throw new Exception("Ya hay un usuario registrado con este correo electronico.");
             }
             return true;
-        }
     }
+        }
 }

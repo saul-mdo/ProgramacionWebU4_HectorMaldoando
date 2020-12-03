@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Actividad1ControlCuentasUsuario.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Actividad1ControlCuentasUsuario
 {
@@ -18,6 +20,10 @@ namespace Actividad1ControlCuentasUsuario
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddDbContext<controlusuariosContext>(
+                options => options.UseMySql("server=localhost;user=root;password=root;database=controlusuarios")
+            );
+            
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
                 options =>
                 {

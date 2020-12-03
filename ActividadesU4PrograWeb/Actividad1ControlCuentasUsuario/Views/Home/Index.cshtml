@@ -1,6 +1,7 @@
 ﻿
 @{
     Layout = "_Layout";
+    var id = int.Parse(@User.Claims.FirstOrDefault(x => x.Type == "IdUsuario").Value);
 }
 
 <div id="EntradaPrincipal">
@@ -12,7 +13,10 @@
         <a href="~/Home/CerrarSesion" id="cerrar">
             Cerrar Sesión
         </a>
-        <a href="EliminarCuenta" id="eliminar">
+        <a href="~/Home/CambiarContraseña" id="cambiarContra">
+            Cambiar Contraseña
+        </a>
+        <a href="~/Home/EliminarCuenta/@id" id="eliminar">
             Eliminar Cuenta
         </a>
     </form>
