@@ -1,0 +1,136 @@
+﻿html {
+    background-image: Url(a.jpg);    
+}
+
+* {
+    font-family: 'monospace';
+}
+
+#Principal {
+    margin: 150px auto;
+    background-color: white;
+    width: 480px;
+    background-color: rgba(255, 255, 255, .8);
+    border-radius: 5px;
+    padding:20px;
+}
+
+.b, textarea {
+    display: block;
+    margin: 15px 40px;
+}
+
+input[type=email], input[type=text], input[type=password], textarea{
+    width: 400px;
+    font-size: 15px;
+}
+
+input[type=submit], input[type=button] {
+    background-color: darkblue;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    width: 100px;
+    padding: 5px;
+}
+
+#divEliminar {
+    margin: 15px 0 0 160px;
+}
+
+
+#recuerdame {
+    margin: 0 0 0 40px;
+}
+
+#campo {
+    font-size: 10px;
+    color: red;
+    margin: 0 40px 10px 40px;
+    display:block;
+}
+
+h1, h2 {
+    text-align: center;
+    color: darkblue;
+    border-bottom: 1.5px solid darkblue;
+    margin: 0 30px 0 30px;
+}
+
+b{
+    color:red;
+}
+
+a {
+    text-decoration:none;
+    font-size:13px;
+    color:blue;
+    display:inline;
+}
+
+p {
+    font-size: 15px;
+    margin: 0 40px 0 40px;
+    display:inline;
+    text-align:justify;
+    
+}
+
+footer {
+    background-color: rgba(255, 255, 255, .8);
+    margin:0;
+    text-align:center;
+}
+
+h4, h5 {
+    margin: 0;
+    color: darkblue;
+}
+
+#cancel{
+    margin-left:40px;
+    margin-top:0;
+    margin-bottom:0;
+    font-size:50px;
+    text-decoration:none;
+}
+
+#EntradaPrincipal {
+    margin: 150px auto;
+    width: 540px;
+    background-color: rgba(255, 255, 255, .8);
+    border-radius: 5px;
+    padding: 20px;
+    vertical-align:central;
+}
+
+    h3 {
+        font-size: 18px;
+        text-align: center;
+        margin: 20px 40px;
+    }
+
+    #EntradaPrincipal form h2 {
+        font-size: 30px;
+    }
+
+    #EntradaPrincipal form a {
+        display: inline;
+    }
+
+#footerEntrada{
+    margin-top:280px;
+}
+
+#EntradaPrincipal form #cerrar {
+    margin: 30px 0 0 60px;
+}
+
+#EntradaPrincipal form #eliminar{
+    margin:30px 0 0 60px;
+}
+
+#EntradaPrincipal form #cambiarContra {
+    margin: 30px 0 0 60px;
+}

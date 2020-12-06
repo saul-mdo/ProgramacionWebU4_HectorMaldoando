@@ -1,0 +1,19 @@
+﻿
+@{
+    Layout = "_Layout";
+}
+
+<div id="Principal">
+    <form method="post" action="~/Home/IniciarSesion">
+        <div id="divInicioSesion">
+            <h2>Bienvenido</h2>
+            <label class="b">Correo Electronico</label>
+            <input name="correo" class="b" type="email" />
+            <label class="b">Contraseña</label>
+            <input name="contraseña" class="b" type="password" />
+            <input type="checkbox" name="recuerdame" id="recuerdame" value="True" /><label id="check" for="recuerdame">Recuerdame</label>
+            @Html.ValidationSummary()
+            <input class="b" type="submit" value="Ingresar" />
+        </div>
+    </form>
+</div>

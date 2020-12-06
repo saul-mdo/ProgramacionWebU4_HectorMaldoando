@@ -21,8 +21,6 @@ namespace Actividad1ControlCuentasUsuario.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySql("server=localhost;user=root;password=root;database=controlusuarios", x => x.ServerVersion("5.7.18-mysql"));
             }
         }
 
