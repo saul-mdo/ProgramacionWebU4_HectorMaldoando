@@ -29,7 +29,7 @@ namespace Actividad2RolesDeUsuario
                 {
                     options.LoginPath = "/Home/IniciarSesion";
                     options.LogoutPath = "/Home/CerrarSesion";
-                    //options.AccessDeniedPath = "/Home/Denegado";
+                    options.AccessDeniedPath = "/Home/Denegado";
                     options.Cookie.Name = "Actividad2";
                 });
         }

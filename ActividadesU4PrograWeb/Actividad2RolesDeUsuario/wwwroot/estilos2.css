@@ -3,16 +3,16 @@
 }
 
 * {
-    font-family: 'monospace';
+    font-family: Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#Principal {
+#Principal, #divListas {
     margin: 150px auto;
     background-color: white;
     width: 480px;
     background-color: rgba(255, 255, 255, .8);
     border-radius: 5px;
-    padding:20px;
+    padding: 20px;
 }
 
 .b, textarea {
@@ -69,14 +69,6 @@ a {
     display:inline;
 }
 
-p {
-    font-size: 15px;
-    margin: 0 40px 0 40px;
-    display:inline;
-    text-align:justify;
-    
-}
-
 footer {
     background-color: rgba(255, 255, 255, .8);
     margin:0;
@@ -92,7 +84,7 @@ h4, h5 {
     margin-left:40px;
     margin-top:0;
     margin-bottom:0;
-    font-size:50px;
+    font-size:25px;
     text-decoration:none;
 }
 
@@ -101,7 +93,7 @@ h4, h5 {
     width: 540px;
     background-color: rgba(255, 255, 255, .8);
     border-radius: 5px;
-    padding: 20px;
+    padding: 15px;
     vertical-align:central;
 }
 
@@ -113,6 +105,7 @@ h4, h5 {
 
     #EntradaPrincipal form h2 {
         font-size: 30px;
+        margin-bottom:40px;
     }
 
     #EntradaPrincipal form a {
@@ -123,14 +116,72 @@ h4, h5 {
     margin-top:280px;
 }
 
-#EntradaPrincipal form #cerrar {
-    margin: 30px 0 0 60px;
+#EntradaPrincipal form .botonesEntrada {
+    margin:0 0 20px 65px;
 }
 
-#EntradaPrincipal form #eliminar{
-    margin:30px 0 0 60px;
+#EntradaPrincipal form .botonesEntrada input[type=button] {
+    height:150px;
+    width:170px;
 }
 
-#EntradaPrincipal form #cambiarContra {
-    margin: 30px 0 0 60px;
+#EntradaPrincipal form #CerrarSesion {
+    display: block;
+    text-align: center;
+    margin:30px 0 0 0;
+    font-size:20px;
+}
+
+
+
+#divListas {
+    margin: 150px auto;
+    background-color: white;
+    width: 700px;
+    background-color: rgba(255, 255, 255, .8);
+    border-radius: 5px;
+    padding: 20px;
+}
+
+table {
+    width: 570px;
+    padding: 10px;
+    border: 1px solid darkblue;
+    margin: 10px auto;
+    background-color: rgba(255, 255, 255, 0.57);
+}
+
+    table a {
+        text-decoration: none;
+        color: black;
+        margin-right: 20px;
+    }
+
+.center {
+    text-align: center;
+}
+
+caption{
+    padding:15px;
+}
+
+caption a {
+    font-size: 18px;
+}
+
+#divListasAlumno {
+    margin: 150px auto;
+    background-color: white;
+    width: 850px;
+    background-color: rgba(255, 255, 255, .8);
+    border-radius: 5px;
+    padding: 20px;
+}
+
+#divListasAlumno table {
+    width: 750px;
+    padding: 10px;
+    border: 1px solid darkblue;
+    margin: 10px auto;
+    background-color: rgba(255, 255, 255, 0.57);
 }

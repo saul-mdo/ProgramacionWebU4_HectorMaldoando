@@ -1,0 +1,27 @@
+﻿@model Actividad2RolesDeUsuario.Models.ViewModels.RegistrarViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "AltaMaestro";
+}
+
+<div id="Principal">
+    <form method="post" action="~/Home/AltaMaestro">
+        <h2>Registrar Maestro</h2>
+        <label class="b">Nombre del maestro</label>
+        <input required class="b" type="text" asp-for="Maestro.Nombre" />
+        <label class="b">Correo Electronico</label>
+        <input required class="b" type="email" asp-for="Maestro.Correo"/>
+        <label class="b">Contraseña</label>
+        <input required class="b" type="password" asp-for="Maestro.Contrasena"/>
+        <label class="b">Confirmar Contraseña</label>
+        <input required class="b" type="password" asp-for="ConfirmarContraseña"/>
+        <label class="b">Grupo</label>
+        <input required class="b" type="text" asp-for="Maestro.Contrasena"/>
+        <input class="b" type="submit" value="Registrar" />
+        <a id="cancel" href="~/Home/Index">
+            &#8678
+        </a>
+    </form>
+</div>
+

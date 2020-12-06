@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Actividad2RolesDeUsuario.Helpers;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Actividad2RolesDeUsuario.Models.ViewModels;
 
 namespace Actividad2RolesDeUsuario.Controllers
 {
@@ -36,35 +37,48 @@ namespace Actividad2RolesDeUsuario.Controllers
         [HttpPost]
         public async Task<IActionResult> IniciarSesion(string correo, string contraseña, bool recuerdame)
         {
-            if (correo == "CorreoDirector@hotmail.com")
+            // PARA PROBAR SIN EL DIRECTOR ALMACENADO EN LA BASE DE DATOS
+            if(correo == "CorreoDirector@hotmail.com" && contraseña == "director")
             {
-                var usuario = context.Director.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
-                if (usuario != null)
-                {
-                    if (usuario.Correo.ToUpper() == correo.ToUpper() && usuario.Contrasena == HashingHelper.GetHash(contraseña))
-                    {
-                        List<Claim> Informacion = new List<Claim>();
-                        Informacion.Add(new Claim(ClaimTypes.Name, "Director"));
-                        Informacion.Add(new Claim(ClaimTypes.Role, "Director"));
-                        Informacion.Add(new Claim("NombreUsuario", usuario.Nombre));
-                        Informacion.Add(new Claim("IdUsuario", usuario.Id.ToString()));
-                        var claimsIdentity = new ClaimsIdentity(Informacion, CookieAuthenticationDefaults.AuthenticationScheme);
-                        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = recuerdame });
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "El usuario o la contraseña no coincide.");
-                        return View();
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "No hay ningun usuario registado con ese correo electronico.");
-                    return View();
-                }
+                List<Claim> Informacion = new List<Claim>();
+                Informacion.Add(new Claim(ClaimTypes.Name, "Director"));
+                Informacion.Add(new Claim(ClaimTypes.Role, "Director"));
+                Informacion.Add(new Claim("NombreUsuario", "Saul Maldonado"));
+                var claimsIdentity = new ClaimsIdentity(Informacion, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = recuerdame });
+                return RedirectToAction("Index");
             }
+
+            //if (correo == "CorreoDirector@hotmail.com")
+            //{
+            //    var usuario = context.Director.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
+            //    if (usuario != null)
+            //    {
+            //        if (usuario.Correo.ToUpper() == correo.ToUpper() && usuario.Contrasena == HashingHelper.GetHash(contraseña))
+            //        {
+            //            List<Claim> Informacion = new List<Claim>();
+            //            Informacion.Add(new Claim(ClaimTypes.Name, "Director"));
+            //            Informacion.Add(new Claim(ClaimTypes.Role, "Director"));
+            //            Informacion.Add(new Claim("NombreUsuario", usuario.Nombre));
+            //            Informacion.Add(new Claim("IdUsuario", usuario.Id.ToString()));
+            //            var claimsIdentity = new ClaimsIdentity(Informacion, CookieAuthenticationDefaults.AuthenticationScheme);
+            //            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            //            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = recuerdame });
+            //            return RedirectToAction("Index");
+            //        }
+            //        else
+            //        {
+            //            ModelState.AddModelError("", "El usuario o la contraseña no coincide.");
+            //            return View();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        ModelState.AddModelError("", "No hay ningun usuario registado con ese correo electronico.");
+            //        return View();
+            //    }
+            //}
             else // ES DOCENTE
             {
                 var usuario = context.Maestro.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
@@ -111,11 +125,30 @@ namespace Actividad2RolesDeUsuario.Controllers
             return RedirectToAction("Index");
         }
 
-        //[AllowAnonymous]
-        //public IActionResult Denegado()
-        //{
-        //    return View();
-        //}
+        [AllowAnonymous]
+        public IActionResult Denegado()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Director")]
+        public IActionResult ListaMaestros()
+        {
+            var maestros = context.Maestro.OrderBy(x => x.Nombre);
+            return View(maestros);
+        }
+
+        [Authorize(Roles = "Director")]
+        public IActionResult AltaMaestro()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Director")]
+        public IActionResult AltaMaestro(RegistrarViewModel vm)
+        {
+            return View();
+        }
 
         //[Authorize(Roles = "Director")]
         //public IActionResult CambiarContraseñaMestro()
@@ -124,14 +157,7 @@ namespace Actividad2RolesDeUsuario.Controllers
         //}
 
         //[Authorize(Roles = "Director")]
-        //public IActionResult AltaDocente()
-        //{
-        //    return View();
-        //}
-
-
-        //[Authorize(Roles = "Director")]
-        //public IActionResult ModificarDocente()
+        //public IActionResult ModificarMaestro()
         //{
         //    return View();
         //}
