@@ -15,6 +15,11 @@ namespace Actividad2RolesDeUsuario.Repositories
             return Context.Maestro.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
         }
 
+        public IEnumerable<Alumno> GetAlumnosByGrupo(string grupo)
+        {
+            return Context.Alumno.Where(x => x.Grupo.ToUpper() == grupo.ToUpper());
+        }
+
         public override bool Validate(Maestro entidad)
         {
             if (string.IsNullOrWhiteSpace(entidad.Nombre))
@@ -32,6 +37,10 @@ namespace Actividad2RolesDeUsuario.Repositories
             if (string.IsNullOrWhiteSpace(entidad.Grupo))
             {
                 throw new Exception("El maestro debe tener un grupo asignado.");
+            }
+            if (Context.Maestro.Any(x => x.Grupo.ToUpper() == entidad.Grupo.ToUpper()))
+            {
+                throw new Exception($"Ya hay un maestro registrado para el grupo {entidad.Grupo}");
             }
             return true;
         }

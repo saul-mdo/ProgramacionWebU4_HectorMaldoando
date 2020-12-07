@@ -137,14 +137,14 @@ h4, h5 {
 #divListas {
     margin: 150px auto;
     background-color: white;
-    width: 700px;
+    width: 780px;
     background-color: rgba(255, 255, 255, .8);
     border-radius: 5px;
     padding: 20px;
 }
 
 table {
-    width: 570px;
+    width: 685px;
     padding: 10px;
     border: 1px solid darkblue;
     margin: 10px auto;

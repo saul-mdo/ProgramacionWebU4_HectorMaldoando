@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Actividad2RolesDeUsuario.Models.Alumno>
+@{
+    Layout = "_Layout";
+}
+
+<div id="divListasAlumno">
+    <h2>Control de Alumnos</h2>
+    <table>
+        <colgroup>
+            <col style="width:20%" />
+            <col style="width:50%" />
+            <col style="width:30%" />
+        </colgroup>
+        <caption>
+            <a href="~/Home/AgregarAlumno"> &#x2795 Nuevo Alumno</a>
+        </caption>
+        <thead>
+            <tr>
+                <th>Grupo</th>
+                <th>Alumno</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="center">@item.Grupo</td>
+                    <td class="center">@item.Nombre</td>
+                    <td class="center">
+                        <a href="~/Home/EditarAlumno/@item.Id">Editar</a>
+                        <a href="javascript:eliminar(@item.Id)">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="~/Home/Index" style="text-align:center; display:block">
+        Regresar
+    </a>
+
+    <form method="post" action="~/Home/EliminarAlumno">
+        <input type="hidden" name="Id" id="alumnoId" />
+    </form>
+
+    <script>
+        function eliminar(id) {
+            if (confirm('¿Esta seguro de que desea eliminar al alumno seleccionado?')) {
+                document.getElementById("alumnoId").value = id;
+                document.querySelector("form").submit();
+            }
+        }
+    </script>
+</div>

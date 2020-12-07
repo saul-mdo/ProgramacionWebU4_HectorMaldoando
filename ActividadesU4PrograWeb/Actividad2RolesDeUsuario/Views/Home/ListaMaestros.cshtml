@@ -7,31 +7,60 @@
     <h2>Control de Maestros</h2>
     <table>
         <colgroup>
-            <col style="width:40%" />
-            <col style="width:60%" />
+            <col style="width:20%"/>
+            <col style="width:30%" />
+            <col style="width:50%" />
+            <col />
+            <col />
         </colgroup>
         <caption>
             <a href="~/Home/AltaMaestro"> &#x2795 Nuevo Docente</a>
         </caption>
         <thead>
             <tr>
+                <th>Estado</th>
                 <th class="center">Docente</th>
-                <th>Acciones</th>
+                <th colspan="3">Acciones</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
+                    <td class="center">@((item.Activo==1)?"Activo":"No Activo")</td>
                     <td class="center">@item.Nombre</td>
                     <td class="center">
-                        <a href="~/Home/Editar/@item.Id">Activar</a>
-                        <a href="~/Home/Editar/@item.Id">Desactivar</a>
-                        <a href="~/Home/Eliminar/@item.Id">Editar</a>
+                        <a href="javascript:activar(@item.Id)">Activar</a>
+                        <a href="javascript:desactivar(@item.Id)">Desactivar</a>
+                        <a href="~/Home/ModificarMaestro/@item.Id">Editar</a>
+                        <a href="~/Home/CambiarContraseña/@item.Id">Contraseña</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+    <a href="~/Home/Index" style="text-align:center; display:block">
+       Regresar
+    </a>
+
+    <form method="post" action="~/Home/EditarActivo">
+        <input type="hidden" name="Id" id="maestroId" />
+    </form>
+
+    <script>
+        function activar(id) {
+            if (confirm('¿Esta seguro de que desea activar la cuenta del maestro seleccionado?')) {
+                document.getElementById("maestroId").value = id;
+                document.querySelector("form").submit();
+            }
+        }
+
+        function desactivar(id) {
+            if (confirm('¿Esta seguro de que desea desactivar la cuenta del maestro seleccionado?')) {
+                document.getElementById("maestroId").value = id;
+                document.querySelector("form").submit();
+            }
+        }
+    </script>
 </div>
 

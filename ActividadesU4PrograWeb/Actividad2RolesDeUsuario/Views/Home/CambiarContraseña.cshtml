@@ -1,0 +1,27 @@
+﻿@model Actividad2RolesDeUsuario.Models.ViewModels.RegistrarViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "_Layout";
+}
+
+<div id="Principal">
+    <form method="post" action="~/Home/CambiarContraseña">
+        <input type="hidden" asp-for="Maestro.Id" />
+        <h2>Cambiar Contraseña</h2>
+        <label class="b">Nueva Contraseña</label>
+        <input required class="b" type="password" asp-for="Maestro.Contrasena" />
+        <label class="b">Confirmar Contraseña</label>
+        <input required class="b" type="password" asp-for="ConfirmarContraseña" />
+        @Html.ValidationSummary()
+        <div id="divEliminar" class="b">
+            <input type="submit" value="Aceptar" />
+            <a id="cancelEliminar" href="~/Home/Index">
+                <input type="button" value="Cancelar" />
+            </a>
+        </div>
+    </form>
+</div>
+
+
+

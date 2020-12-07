@@ -18,6 +18,7 @@
         <input required class="b" type="password" asp-for="ConfirmarContraseña"/>
         <label class="b">Grupo</label>
         <input required class="b" type="text" asp-for="Maestro.Grupo"/>
+        @Html.ValidationSummary()
         <input class="b" type="submit" value="Registrar" />
         <a id="cancel" href="~/Home/Index">
             &#8678

@@ -1,0 +1,24 @@
+﻿@model Actividad2RolesDeUsuario.Models.Maestro
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "_Layout";
+}
+
+<div id="Principal">
+    <form method="post" action="~/Home/ModificarMaestro">
+        <h2>Editar Maestro</h2>
+        <input type="hidden" asp-for="Id" />
+        <label class="b">Nombre del maestro</label>
+        <input required class="b" type="text" asp-for="Nombre" />
+        <label class="b">Correo Electronico</label>
+        <input required class="b" type="email" asp-for="Correo" />
+        <label class="b">Grupo</label>
+        <input required class="b" type="text" asp-for="Grupo" />
+        @Html.ValidationSummary()
+        <input class="b" type="submit" value="Registrar" />
+        <a id="cancel" href="~/Home/ListaMaestros">
+            &#8678
+        </a>
+    </form>
+</div>

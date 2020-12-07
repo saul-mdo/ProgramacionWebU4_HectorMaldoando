@@ -39,7 +39,7 @@ namespace Actividad2RolesDeUsuario.Controllers
         public async Task<IActionResult> IniciarSesion(string correo, string contraseña, bool recuerdame)
         {
             // PARA PROBAR SIN EL DIRECTOR ALMACENADO EN LA BASE DE DATOS
-            if(correo == "CorreoDirector@hotmail.com" && contraseña == "director")
+            if (correo == "CorreoDirector@hotmail.com" && contraseña == "director")
             {
                 List<Claim> Informacion = new List<Claim>();
                 Informacion.Add(new Claim(ClaimTypes.Name, "Director"));
@@ -156,7 +156,7 @@ namespace Actividad2RolesDeUsuario.Controllers
             {
                 if (vm.Maestro.Contrasena.ToString() == vm.ConfirmarContraseña.ToString())
                 {
-                   var contraHash = HashingHelper.GetHash(vm.Maestro.Contrasena);
+                    var contraHash = HashingHelper.GetHash(vm.Maestro.Contrasena);
                     vm.Maestro.Contrasena = contraHash;
                     reposMaestro.Insert(vm.Maestro);
                     return RedirectToAction("ListaMaestros");
@@ -167,42 +167,199 @@ namespace Actividad2RolesDeUsuario.Controllers
                     return View(vm);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(vm);
             }
         }
 
-        //[Authorize(Roles = "Director")]
-        //public IActionResult CambiarContraseñaMestro()
-        //{
-        //    return View();
-        //}
+        [Authorize(Roles = "Director")]
+        [HttpPost]
+        public IActionResult EditarActivo(Maestro m)
+        {
+            MaestrosRepository repos = new MaestrosRepository(context);
+            var original = repos.Get(m.Id);
+            if (original != null)
+            {
+                if (original.Activo == 1)
+                {
+                    original.Activo = 0;
+                    repos.Update(original);
+                }
+                else
+                {
+                    original.Activo = 1;
+                    repos.Update(original);
+                }
 
-        //[Authorize(Roles = "Director")]
-        //public IActionResult ModificarMaestro()
-        //{
-        //    return View();
-        //}
+            }
+            return RedirectToAction("ListaMaestros");
+        }
 
-        //[Authorize(Roles = "Director,Maestro")]
-        //public IActionResult AgregarAlumno()
-        //{
-        //    return View();
-        //}
+        [Authorize(Roles = "Director")]
+        public IActionResult CambiarContraseña(int id)
+        {
+            MaestrosRepository repos = new MaestrosRepository(context);
+            RegistrarViewModel vm = new RegistrarViewModel();
+            vm.Maestro = repos.Get(id);
+            return View(vm);
+        }
+        [Authorize(Roles = "Director")]
+        [HttpPost]
+        public IActionResult CambiarContraseña(RegistrarViewModel vm)
+        {
+            MaestrosRepository repos = new MaestrosRepository(context);
+            var original = repos.Get(vm.Maestro.Id);
+            if (original != null)
+            {
+                if (vm.Maestro.Contrasena == vm.ConfirmarContraseña)
+                {
+                    var nuevaContraHash = HashingHelper.GetHash(vm.Maestro.Contrasena);
+                    original.Contrasena = nuevaContraHash;
+                    repos.Update(original);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Las contraseñas no coiniciden.");
+                    return View(vm);
+                }
+            }
+            return RedirectToAction("Index");
+        }
 
-        //[Authorize(Roles = "Director,Maestro")]
-        //public IActionResult EliminarAlumno()
-        //{
-        //    return View();
-        //}
+        [Authorize(Roles = "Director")]
+        public IActionResult ModificarMaestro(int id)
+        {
+            MaestrosRepository repos = new MaestrosRepository(context);
+            var maestro = repos.Get(id);
+            if (maestro != null)
+            {
+                return View(maestro);
+            }
+            else
+                return RedirectToAction("ListaMaestros");
+        }
 
-        //[Authorize(Roles = "Director,Maestro")]
-        //public IActionResult EditarAlumno()
-        //{
-        //    return View();
-        //}
+        [Authorize(Roles = "Director")]
+        [HttpPost]
+        public IActionResult ModificarMaestro(Maestro m)
+        {
+            MaestrosRepository repos = new MaestrosRepository(context);
+            try
+            {
+                var maestro = repos.Get(m.Id);
+                if (maestro != null)
+                {
+                    maestro.Nombre = m.Nombre;
+                    maestro.Correo = m.Correo;
+                    maestro.Grupo = m.Grupo;
+                    repos.Update(maestro);
+                    return RedirectToAction("ListaMaestros");
+                }
+                else
+                    return RedirectToAction("ListaMaestros");
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(m);
+            }
+        }
 
+        [Authorize(Roles = "Director,Maestro")]
+        public IActionResult AgregarAlumno()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Director,Maestro")]
+        [HttpPost]
+        public IActionResult AgregarAlumno(Alumno a)
+        {
+            AlumnosRepository repos = new AlumnosRepository(context);
+            try
+            {
+                a.IdMaestro = context.Maestro.FirstOrDefault(x => x.Grupo == a.Grupo).Id;
+                repos.Insert(a);
+                return RedirectToAction("ListaAlumnos");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(a);
+            }
+        }
+
+        [Authorize(Roles = "Director,Maestro")]
+        [HttpPost]
+        public IActionResult EliminarAlumno(Alumno a)
+        {
+            AlumnosRepository repos = new AlumnosRepository(context);
+            var original = repos.Get(a.Id);
+            if (original != null)
+            {
+                repos.Delete(original);
+            }
+            return RedirectToAction("ListaAlumnos");
+        }
+
+        [Authorize(Roles = "Director,Maestro")]
+        public IActionResult EditarAlumno(int id)
+        {
+            AlumnosRepository repos = new AlumnosRepository(context);
+            var alumno = repos.Get(id);
+            if (alumno != null)
+            {
+                return View(alumno);
+            }
+            else
+                return RedirectToAction("ListaAlumnos");
+
+        }
+
+        [Authorize(Roles = "Director,Maestro")]
+        [HttpPost]
+        public IActionResult EditarAlumno(Alumno a)
+        {
+            AlumnosRepository repos = new AlumnosRepository(context);
+            try
+            {
+                a.IdMaestro = context.Maestro.FirstOrDefault(x => x.Grupo == a.Grupo).Id;
+                var original = repos.Get(a.Id);
+                if (original != null)
+                {
+                    original.Nombre = a.Nombre;
+                    original.Grupo = a.Grupo;
+                    original.IdMaestro = a.IdMaestro;
+                    repos.Update(original);
+                }
+                return RedirectToAction("ListaAlumnos");
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(a);
+            }
+        }
+
+        [Authorize(Roles = "Maestro,Director")]
+        public IActionResult ListaAlumnos(int id)
+        {
+            if (User.IsInRole("Maestro"))
+            {
+                MaestrosRepository maestroRepos = new MaestrosRepository(context);
+                var maestro = maestroRepos.Get(id);
+                var alumnos = maestroRepos.GetAlumnosByGrupo(maestro.Grupo);
+                return View(alumnos);
+            }
+            else
+            {
+                AlumnosRepository reposAlumno = new AlumnosRepository(context);
+                var alumnos = reposAlumno.GetAll();
+                return View(alumnos);
+            }
+        }
     }
 }

@@ -1,19 +1,20 @@
 ﻿
 @{
     Layout = "_Layout";
+    string nombre = @User.Claims.FirstOrDefault(x => x.Type == "NombreUsuario").Value;
 }
 
 @if (User.IsInRole("Director"))
 {
     <div id="EntradaPrincipal">
         <form>
-            <h2>¡Bienvenido @User.Claims.FirstOrDefault(x => x.Type == "NombreUsuario").Value!</h2>
+            <h2>¡Bienvenido @nombre!</h2>
 
             <a href="~/Home/ListaMaestros" class="botonesEntrada">
                 <input type="button" value="Maestros" />
             </a>
 
-            <a href="#" class="botonesEntrada">
+            <a href="~/Home/ListaAlumnos" class="botonesEntrada">
                 <input type="button" value="Alumnos" />
             </a>
 
@@ -24,13 +25,14 @@
         </form>
     </div>
 }
+
 @if (User.IsInRole("Maestro"))
 {
     <div id="EntradaPrincipal">
         <form>
-            <h2>¡Bienvenido @User.Claims.FirstOrDefault(x => x.Type == "NombreUsuario").Value!</h2>
+            <h2>¡Bienvenido @nombre!</h2>
 
-            <a href="#" class="botonesEntrada">
+            <a href="~/Home/ListaAlumnos/@User.Claims.FirstOrDefault(x => x.Type == "IdUsuario").Value" class="botonesEntrada">
                 <input type="button" value="Alumnos" style="width:400px" />
             </a>
 
