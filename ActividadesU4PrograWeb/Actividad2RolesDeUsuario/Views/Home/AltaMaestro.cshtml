@@ -2,7 +2,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    ViewData["Title"] = "AltaMaestro";
+    Layout = "_Layout";
 }
 
 <div id="Principal">
@@ -17,7 +17,7 @@
         <label class="b">Confirmar Contraseña</label>
         <input required class="b" type="password" asp-for="ConfirmarContraseña"/>
         <label class="b">Grupo</label>
-        <input required class="b" type="text" asp-for="Maestro.Contrasena"/>
+        <input required class="b" type="text" asp-for="Maestro.Grupo"/>
         <input class="b" type="submit" value="Registrar" />
         <a id="cancel" href="~/Home/Index">
             &#8678

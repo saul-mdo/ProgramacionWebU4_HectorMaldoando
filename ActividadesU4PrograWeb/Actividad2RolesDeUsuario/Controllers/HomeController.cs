@@ -10,6 +10,7 @@ using Actividad2RolesDeUsuario.Helpers;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Actividad2RolesDeUsuario.Models.ViewModels;
+using Actividad2RolesDeUsuario.Repositories;
 
 namespace Actividad2RolesDeUsuario.Controllers
 {
@@ -81,7 +82,8 @@ namespace Actividad2RolesDeUsuario.Controllers
             //}
             else // ES DOCENTE
             {
-                var usuario = context.Maestro.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
+                MaestrosRepository repos = new MaestrosRepository(context);
+                var usuario = repos.GetMaestroByCorreo(correo);
                 if (usuario != null)
                 {
                     if (usuario.Activo == 1)
@@ -134,7 +136,8 @@ namespace Actividad2RolesDeUsuario.Controllers
         [Authorize(Roles = "Director")]
         public IActionResult ListaMaestros()
         {
-            var maestros = context.Maestro.OrderBy(x => x.Nombre);
+            MaestrosRepository reposMaestro = new MaestrosRepository(context);
+            var maestros = reposMaestro.GetAll();
             return View(maestros);
         }
 
@@ -145,9 +148,30 @@ namespace Actividad2RolesDeUsuario.Controllers
         }
 
         [Authorize(Roles = "Director")]
+        [HttpPost]
         public IActionResult AltaMaestro(RegistrarViewModel vm)
         {
-            return View();
+            MaestrosRepository reposMaestro = new MaestrosRepository(context);
+            try
+            {
+                if (vm.Maestro.Contrasena.ToString() == vm.ConfirmarContraseña.ToString())
+                {
+                   var contraHash = HashingHelper.GetHash(vm.Maestro.Contrasena);
+                    vm.Maestro.Contrasena = contraHash;
+                    reposMaestro.Insert(vm.Maestro);
+                    return RedirectToAction("ListaMaestros");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Las contraseñas no coinciden");
+                    return View(vm);
+                }
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(vm);
+            }
         }
 
         //[Authorize(Roles = "Director")]

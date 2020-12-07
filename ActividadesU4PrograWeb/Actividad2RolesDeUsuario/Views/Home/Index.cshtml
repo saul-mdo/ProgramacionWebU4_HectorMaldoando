@@ -3,22 +3,42 @@
     Layout = "_Layout";
 }
 
-<div id="EntradaPrincipal">
-    <form>
-        <h2>¡Bienvenido Saúl Maldonado!</h2>
+@if (User.IsInRole("Director"))
+{
+    <div id="EntradaPrincipal">
+        <form>
+            <h2>¡Bienvenido @User.Claims.FirstOrDefault(x => x.Type == "NombreUsuario").Value!</h2>
 
-        <a href="~/Home/ListaMaestros" class="botonesEntrada">
-            <input type="button" value="Maestros" />
-        </a>
+            <a href="~/Home/ListaMaestros" class="botonesEntrada">
+                <input type="button" value="Maestros" />
+            </a>
 
-        <a href="#" class="botonesEntrada">
-            <input type="button" value="Alumnos" />
-        </a>
+            <a href="#" class="botonesEntrada">
+                <input type="button" value="Alumnos" />
+            </a>
 
-        <a href="~/Home/CerrarSesion" id="CerrarSesion">
-            Cerrar Sesión
-        </a>
+            <a href="~/Home/CerrarSesion" id="CerrarSesion">
+                Cerrar Sesión
+            </a>
 
-    </form>
-</div>
+        </form>
+    </div>
+}
+@if (User.IsInRole("Maestro"))
+{
+    <div id="EntradaPrincipal">
+        <form>
+            <h2>¡Bienvenido @User.Claims.FirstOrDefault(x => x.Type == "NombreUsuario").Value!</h2>
+
+            <a href="#" class="botonesEntrada">
+                <input type="button" value="Alumnos" style="width:400px" />
+            </a>
+
+            <a href="~/Home/CerrarSesion" id="CerrarSesion">
+                Cerrar Sesión
+            </a>
+
+        </form>
+    </div>
+}
 
