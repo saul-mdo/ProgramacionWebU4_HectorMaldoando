@@ -10,5 +10,6 @@ namespace Actividad2RolesDeUsuario.Models.ViewModels
         public Maestro Maestro { get; set; }
         public Alumno Alumno { get; set; }
         public string ConfirmarContraseña { get; set; }
+        public int IdMaestro { get; set; }
     }
 }

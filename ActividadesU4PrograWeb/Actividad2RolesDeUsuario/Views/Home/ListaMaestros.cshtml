@@ -30,8 +30,14 @@
                     <td class="center">@((item.Activo==1)?"Activo":"No Activo")</td>
                     <td class="center">@item.Nombre</td>
                     <td class="center">
-                        <a href="javascript:activar(@item.Id)">Activar</a>
-                        <a href="javascript:desactivar(@item.Id)">Desactivar</a>
+                        @if (item.Activo == 0)
+                        {
+                            <a href="javascript:activar(@item.Id)">Activar</a>
+                        }
+                        else
+                        {
+                            <a href="javascript:desactivar(@item.Id)">Desactivar</a>
+                        }
                         <a href="~/Home/ModificarMaestro/@item.Id">Editar</a>
                         <a href="~/Home/CambiarContraseña/@item.Id">Contraseña</a>
                     </td>

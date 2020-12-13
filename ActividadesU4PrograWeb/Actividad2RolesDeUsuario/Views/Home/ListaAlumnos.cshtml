@@ -11,9 +11,18 @@
             <col style="width:50%" />
             <col style="width:30%" />
         </colgroup>
-        <caption>
-            <a href="~/Home/AgregarAlumno"> &#x2795 Nuevo Alumno</a>
-        </caption>
+        @if (User.IsInRole("Maestro"))
+        {
+            <caption>
+                <a href="~/Home/AgregarAlumno/@User.Claims.FirstOrDefault(x => x.Type == "IdUsuario").Value"> &#x2795 Nuevo Alumno</a>
+            </caption>
+        }
+        else
+        {
+            <caption>
+                <a href="~/Home/AgregarAlumno/"> &#x2795 Nuevo Alumno</a>
+            </caption>
+        }
         <thead>
             <tr>
                 <th>Grupo</th>

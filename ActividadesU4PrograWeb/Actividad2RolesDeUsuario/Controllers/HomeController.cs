@@ -38,48 +38,36 @@ namespace Actividad2RolesDeUsuario.Controllers
         [HttpPost]
         public async Task<IActionResult> IniciarSesion(string correo, string contraseña, bool recuerdame)
         {
-            // PARA PROBAR SIN EL DIRECTOR ALMACENADO EN LA BASE DE DATOS
-            if (correo == "CorreoDirector@hotmail.com" && contraseña == "director")
+            if (correo == "CorreoDirector@hotmail.com")
             {
-                List<Claim> Informacion = new List<Claim>();
-                Informacion.Add(new Claim(ClaimTypes.Name, "Director"));
-                Informacion.Add(new Claim(ClaimTypes.Role, "Director"));
-                Informacion.Add(new Claim("NombreUsuario", "Saul Maldonado"));
-                var claimsIdentity = new ClaimsIdentity(Informacion, CookieAuthenticationDefaults.AuthenticationScheme);
-                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = recuerdame });
-                return RedirectToAction("Index");
+                var usuario = context.Director.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
+                if (usuario != null)
+                {
+                    var contraHash = HashingHelper.GetHash(contraseña).ToUpper();
+                    if (usuario.Correo.ToUpper() == correo.ToUpper() && usuario.Contrasena == contraHash)
+                    {
+                        List<Claim> Informacion = new List<Claim>();
+                        Informacion.Add(new Claim(ClaimTypes.Name, "Director"));
+                        Informacion.Add(new Claim(ClaimTypes.Role, "Director"));
+                        Informacion.Add(new Claim("NombreUsuario", usuario.Nombre));
+                        Informacion.Add(new Claim("IdUsuario", usuario.Id.ToString()));
+                        var claimsIdentity = new ClaimsIdentity(Informacion, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = recuerdame });
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "El usuario o la contraseña no coincide.");
+                        return View();
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "No hay ningun usuario registado con ese correo electronico.");
+                    return View();
+                }
             }
-
-            //if (correo == "CorreoDirector@hotmail.com")
-            //{
-            //    var usuario = context.Director.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
-            //    if (usuario != null)
-            //    {
-            //        if (usuario.Correo.ToUpper() == correo.ToUpper() && usuario.Contrasena == HashingHelper.GetHash(contraseña))
-            //        {
-            //            List<Claim> Informacion = new List<Claim>();
-            //            Informacion.Add(new Claim(ClaimTypes.Name, "Director"));
-            //            Informacion.Add(new Claim(ClaimTypes.Role, "Director"));
-            //            Informacion.Add(new Claim("NombreUsuario", usuario.Nombre));
-            //            Informacion.Add(new Claim("IdUsuario", usuario.Id.ToString()));
-            //            var claimsIdentity = new ClaimsIdentity(Informacion, CookieAuthenticationDefaults.AuthenticationScheme);
-            //            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            //            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = recuerdame });
-            //            return RedirectToAction("Index");
-            //        }
-            //        else
-            //        {
-            //            ModelState.AddModelError("", "El usuario o la contraseña no coincide.");
-            //            return View();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        ModelState.AddModelError("", "No hay ningun usuario registado con ese correo electronico.");
-            //        return View();
-            //    }
-            //}
             else // ES DOCENTE
             {
                 MaestrosRepository repos = new MaestrosRepository(context);
@@ -137,7 +125,7 @@ namespace Actividad2RolesDeUsuario.Controllers
         public IActionResult ListaMaestros()
         {
             MaestrosRepository reposMaestro = new MaestrosRepository(context);
-            var maestros = reposMaestro.GetAll();
+            var maestros = reposMaestro.GetAll().OrderBy(x=>x.Nombre);
             return View(maestros);
         }
 
@@ -205,6 +193,7 @@ namespace Actividad2RolesDeUsuario.Controllers
             vm.Maestro = repos.Get(id);
             return View(vm);
         }
+
         [Authorize(Roles = "Director")]
         [HttpPost]
         public IActionResult CambiarContraseña(RegistrarViewModel vm)
@@ -254,14 +243,22 @@ namespace Actividad2RolesDeUsuario.Controllers
                 {
                     maestro.Nombre = m.Nombre;
                     maestro.Correo = m.Correo;
-                    maestro.Grupo = m.Grupo;
+                    if (context.Maestro.Any(x => x.Grupo == m.Grupo && x.Id!=m.Id))
+                    {
+                        ModelState.AddModelError("", "Ya hay un maestro registrado con ese grupo");
+                        return View(m);
+                    }
+                    else
+                    {
+                        maestro.Grupo = m.Grupo;
+                    }
                     repos.Update(maestro);
                     return RedirectToAction("ListaMaestros");
                 }
                 else
                     return RedirectToAction("ListaMaestros");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(m);
@@ -269,26 +266,79 @@ namespace Actividad2RolesDeUsuario.Controllers
         }
 
         [Authorize(Roles = "Director,Maestro")]
-        public IActionResult AgregarAlumno()
+        public IActionResult AgregarAlumno(int? id)
         {
-            return View();
+            RegistrarViewModel vm = new RegistrarViewModel();
+            if (User.IsInRole("Maestro"))
+            {
+                vm.IdMaestro = (int)id;
+                return View(vm);
+            }
+            return View(vm);
         }
 
         [Authorize(Roles = "Director,Maestro")]
         [HttpPost]
-        public IActionResult AgregarAlumno(Alumno a)
+        public IActionResult AgregarAlumno(RegistrarViewModel vm)
         {
             AlumnosRepository repos = new AlumnosRepository(context);
             try
             {
-                a.IdMaestro = context.Maestro.FirstOrDefault(x => x.Grupo == a.Grupo).Id;
-                repos.Insert(a);
-                return RedirectToAction("ListaAlumnos");
+                MaestrosRepository maestroRepos = new MaestrosRepository(context);
+
+                var maestro = maestroRepos.Get(vm.IdMaestro);
+
+                if (maestro == null)
+                {
+                    if (User.IsInRole("Director"))
+                    {
+                        var GrupoMaestro = context.Maestro.FirstOrDefault(x => x.Grupo == vm.Alumno.Grupo);
+                        if (GrupoMaestro == null)
+                        {
+                            ModelState.AddModelError("", "Aún no hay ningun maestro asignado a ese grupo.");
+                            return View(vm);
+                        }
+                        else
+                        {
+                            vm.Alumno.IdMaestro = GrupoMaestro.Id;
+                            repos.Insert(vm.Alumno);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Aún no hay ningun maestro asignado a ese grupo.");
+                        return View(vm);
+                    }
+                }
+                else
+                {
+                    if (context.Maestro.Any(x => x.Grupo == vm.Alumno.Grupo))
+                    {
+
+                        if (maestro.Grupo != vm.Alumno.Grupo)
+                        {
+                            ModelState.AddModelError("", "Usted no tiene permitido agregar alumnos a dicho grupo");
+                            return View(vm);
+                        }
+
+
+                        vm.Alumno.IdMaestro = vm.IdMaestro;
+                        repos.Insert(vm.Alumno);
+
+                    }
+                }
+
+                if (User.IsInRole("Maestro"))
+                {
+                    return RedirectToAction("ListaAlumnos", new { id = vm.IdMaestro });
+                }
+                else
+                    return RedirectToAction("ListaAlumnos");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return View(a);
+                return View(vm);
             }
         }
 
@@ -302,62 +352,103 @@ namespace Actividad2RolesDeUsuario.Controllers
             {
                 repos.Delete(original);
             }
-            return RedirectToAction("ListaAlumnos");
+            if (User.IsInRole("Maestro"))
+            {
+                var id = int.Parse(User.Claims.FirstOrDefault(x => x.Type == "IdUsuario").Value);
+                return RedirectToAction("ListaAlumnos", new { id = id });
+            }
+            else
+            {
+                return RedirectToAction("ListaAlumnos");
+            }
+
         }
 
         [Authorize(Roles = "Director,Maestro")]
         public IActionResult EditarAlumno(int id)
         {
             AlumnosRepository repos = new AlumnosRepository(context);
-            var alumno = repos.Get(id);
-            if (alumno != null)
+            RegistrarViewModel vm = new RegistrarViewModel();
+            vm.Alumno = repos.Get(id);
+
+            if (User.IsInRole("Maestro"))
             {
-                return View(alumno);
+                vm.IdMaestro = int.Parse(User.Claims.FirstOrDefault(x => x.Type == "IdUsuario").Value);
+            }
+
+            if (vm.Alumno != null)
+            {
+                return View(vm);
             }
             else
-                return RedirectToAction("ListaAlumnos");
+            {
+                if (User.IsInRole("Maestro"))
+                {
+                    return RedirectToAction("ListaAlumnos", new { id = vm.IdMaestro });
+
+                }
+                else
+                {
+                    return RedirectToAction("ListaAlumnos");
+                }
+            }
 
         }
 
         [Authorize(Roles = "Director,Maestro")]
         [HttpPost]
-        public IActionResult EditarAlumno(Alumno a)
+        public IActionResult EditarAlumno(RegistrarViewModel vm)
         {
             AlumnosRepository repos = new AlumnosRepository(context);
             try
             {
-                a.IdMaestro = context.Maestro.FirstOrDefault(x => x.Grupo == a.Grupo).Id;
-                var original = repos.Get(a.Id);
+                var m = context.Maestro.FirstOrDefault(x => x.Grupo == vm.Alumno.Grupo);
+                var original = repos.Get(vm.Alumno.Id);
                 if (original != null)
                 {
-                    original.Nombre = a.Nombre;
-                    original.Grupo = a.Grupo;
-                    original.IdMaestro = a.IdMaestro;
+                    original.Nombre = vm.Alumno.Nombre;
+                    original.Grupo = vm.Alumno.Grupo;
+                    if (m == null)
+                    {
+                        ModelState.AddModelError("", "Aún no hay ningun maestro asignado a ese grupo.");
+                        return View(vm);
+                    }
+                    else
+                    {
+                        original.IdMaestro = m.Id;
+                    }
                     repos.Update(original);
                 }
-                return RedirectToAction("ListaAlumnos");
+                if (User.IsInRole("Maestro"))
+                {
+                    return RedirectToAction("ListaAlumnos", new { id = vm.IdMaestro });
+                }
+                else
+                {
+                    return RedirectToAction("ListaAlumnos");
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return View(a);
+                return View(vm);
             }
         }
 
         [Authorize(Roles = "Maestro,Director")]
-        public IActionResult ListaAlumnos(int id)
+        public IActionResult ListaAlumnos(int? id)
         {
             if (User.IsInRole("Maestro"))
             {
                 MaestrosRepository maestroRepos = new MaestrosRepository(context);
                 var maestro = maestroRepos.Get(id);
-                var alumnos = maestroRepos.GetAlumnosByGrupo(maestro.Grupo);
+                var alumnos = maestroRepos.GetAlumnosByGrupo(maestro.Grupo).OrderBy(x=>x.Nombre);
                 return View(alumnos);
             }
             else
             {
                 AlumnosRepository reposAlumno = new AlumnosRepository(context);
-                var alumnos = reposAlumno.GetAll();
+                var alumnos = reposAlumno.GetAll().OrderBy(x => x.Grupo);
                 return View(alumnos);
             }
         }

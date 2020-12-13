@@ -19,6 +19,10 @@ namespace Actividad2RolesDeUsuario.Repositories
             {
                 throw new Exception("Asignar un grupo al alumno.");
             }
+            if(Context.Alumno.Any(x=>x.Nombre.ToUpper() == entidad.Nombre.ToUpper() && x.Id != entidad.Id))
+            {
+                throw new Exception("Este alumno ya está registrado.");
+            }
             return true;
         }
 

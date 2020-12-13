@@ -15,6 +15,12 @@ namespace Actividad2RolesDeUsuario.Repositories
             return Context.Maestro.FirstOrDefault(x => x.Correo.ToUpper() == correo.ToUpper());
         }
 
+        public override void Update(Maestro entidad)
+        {
+            Context.Update(entidad);
+            Context.SaveChanges();
+        }
+
         public IEnumerable<Alumno> GetAlumnosByGrupo(string grupo)
         {
             return Context.Alumno.Where(x => x.Grupo.ToUpper() == grupo.ToUpper());
@@ -40,7 +46,11 @@ namespace Actividad2RolesDeUsuario.Repositories
             }
             if (Context.Maestro.Any(x => x.Grupo.ToUpper() == entidad.Grupo.ToUpper()))
             {
-                throw new Exception($"Ya hay un maestro registrado para el grupo {entidad.Grupo}");
+                throw new Exception("Ya hay un maestro registrado para este grupo.");
+            }
+            if (Context.Maestro.Any(x => x.Correo.ToUpper() == entidad.Correo.ToUpper()))
+            {
+                throw new Exception("Ya hay un maestro registrado con este correo electronico.");
             }
             return true;
         }

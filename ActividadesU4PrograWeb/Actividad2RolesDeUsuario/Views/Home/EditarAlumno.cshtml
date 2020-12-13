@@ -1,4 +1,4 @@
-﻿@model Actividad2RolesDeUsuario.Models.Alumno
+﻿@model Actividad2RolesDeUsuario.Models.ViewModels.RegistrarViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
@@ -8,16 +8,26 @@
 <div id="Principal">
     <form method="post" action="~/Home/EditarAlumno">
         <h2>Editar Alumno</h2>
-        <input hidden="hidden" asp-for="Id" />
+        <input hidden="hidden" asp-for="IdMaestro" />
+        <input hidden="hidden" asp-for="Alumno.Id" />
         <label class="b">Nombre del Alumno</label>
-        <input required class="b" type="text" asp-for="Nombre"/>
+        <input required class="b" type="text" asp-for="Alumno.Nombre" />
         <label class="b">Grupo</label>
-        <input required class="b" type="text" asp-for="Grupo" />
+        <input required class="b" type="text" asp-for="Alumno.Grupo" />
         @Html.ValidationSummary()
         <input class="b" type="submit" value="Guardar" />
-        <a id="cancel" href="~/Home/Index">
-            &#8678
-        </a>
+        @if (User.IsInRole("Maestro"))
+        {
+            <a id="cancel" href="~/Home/ListaAlumnos/@Model.IdMaestro">
+                &#8678
+            </a>
+        }
+        else
+        {
+            <a id="cancel" href="~/Home/ListaAlumnos/">
+                &#8678
+            </a>
+        }
     </form>
 </div>
 
