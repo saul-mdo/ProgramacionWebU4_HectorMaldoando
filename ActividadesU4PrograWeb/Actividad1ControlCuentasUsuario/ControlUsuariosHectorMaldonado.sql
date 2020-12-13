@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `controlusuarios` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `controlusuarios`;
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: controlusuarios
@@ -33,7 +31,7 @@ CREATE TABLE `usuario` (
   `Codigo` text NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `Id_UNIQUE` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +40,9 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (16,'HectorGomez','saul_99_27@outlook.com','09feef52d2dd3e9c37ff44915264c159c7da95c6e8199711a47d5dda89f068f4','','NTI4MDM5MDEw');
+
+/*LA CONTRASEÑA ES: saulmaldonado*/
+INSERT INTO `usuario` VALUES (20,'Saul Maldonado','saul_99_27@outlook.com','8a94d38fbb93154f6d01cd2c0b761541fc1b170ed916470820d40d6b21e4ddd9','','NDA3NzYzNDU2');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-05 19:03:38
+-- Dump completed on 2020-12-13  2:13:02

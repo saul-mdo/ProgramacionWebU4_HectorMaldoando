@@ -118,7 +118,7 @@ namespace Actividad1ControlCuentasUsuario.Controllers
 
                     // MANDO EL CORREO CON UN CODIGO GENERADO RANDOM.
                     MailMessage message = new MailMessage();
-                    message.From = new MailAddress("sistemascomputacionales7g@gmail.com", "Sistemas171");
+                    message.From = new MailAddress("testingcodesistemas@gmail.com", "Sistemas171");
                     message.To.Add(vm.Usuario.Correo);
                     message.Subject = "Confirmación de Registro";
                     message.Body = $"¡Bienvenido a Sistemas171!<br/> Introduzca el siguiente codigo en la ventana de confirmación para activar su cuenta: {codigo}";
@@ -126,7 +126,7 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                     SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
                     client.EnableSsl = true;
                     client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("sistemascomputacionales7g@gmail.com", "sistemas7g");
+                    client.Credentials = new NetworkCredential("testingcodesistemas@gmail.com", "correofake1");
                     client.Send(message);
 
                     return RedirectToAction("ValidarCodigo", "Home", new { Id = vm.Usuario.Id });
@@ -284,7 +284,7 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                     repos.Update(original);
                     // MANDO EL CORREO CON UN CODIGO GENERADO RANDOM.
                     MailMessage message = new MailMessage();
-                    message.From = new MailAddress("sistemascomputacionales7g@gmail.com", "Sistemas171");
+                    message.From = new MailAddress("testingcodesistemas@gmail.com", "Sistemas171");
                     message.To.Add(original.Correo);
                     message.Subject = "Recuperación de Contraseña";
                     message.Body = $"Hemos recibido su solicitud para cambiar su contraseña.<br/> Introduzca el siguiente codigo en la ventana de confirmación para modificar su contraseña: {codigo}";
@@ -292,7 +292,7 @@ namespace Actividad1ControlCuentasUsuario.Controllers
                     SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
                     client.EnableSsl = true;
                     client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("sistemascomputacionales7g@gmail.com", "sistemas7g");
+                    client.Credentials = new NetworkCredential("testingcodesistemas@gmail.com", "correofake1");
                     client.Send(message);
                     return RedirectToAction("ValidarCodigo", "Home", new { id = original.Id });
                 }
